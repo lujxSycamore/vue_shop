@@ -2,18 +2,19 @@
   <div class="loginContainer">
     login_area
     <div class="loginBox">
-      <!-- 用户头像 -->
+      <!-- 用户头像框 -->
       <div class="portraitBox">
         <img src="../assets/portrait.jpg" alt="" />
       </div>
-      <!-- 下为登录页面表单 -->
+
+      <!-- 登录页面主体表单 -->
       <el-form
         ref="loginFormRef"
         class="loginForm"
         :rules="login_formRules"
         v-bind:model="login_form"
       >
-        <!-- 用户名输入input -->
+        <!-- 用户名输入框input -->
         <el-form-item label="用户名" prop="user_id">
           <!--  做表单验证时<el-form-item>必须添加prop属性，而且prop的名字必须和input框v-model绑定的值一致。
             否则的话，表单验证就会出错。
@@ -24,7 +25,8 @@
             placeholder="请输入用户名"
           ></el-input>
         </el-form-item>
-        <!-- 密码输入input -->
+
+        <!-- 密码框输入input -->
         <el-form-item label="密 码" prop="user_password">
           <el-input
             type="password"
@@ -33,10 +35,11 @@
             placeholder="请输入密码"
           ></el-input>
         </el-form-item>
-        <!-- 按钮区域 -->
+
+        <!-- 登陆界面按钮区域 -->
         <el-form-item class="elButton">
           <el-button type="primary" @click="login()">登录</el-button>
-          <el-button type="info" @click="resetLoginForm">重置</el-button>
+          <el-button type="info" @click="resetLoginForm()">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -47,10 +50,12 @@
 export default {
   data () {
     return {
+      /* 登录默认用户名与密码 */
       login_form: {
         user_id: 'admin',
         user_password: '123456'
       },
+      /* 表单合法性验证的规则 */
       login_formRules: {
         user_id: [
           {
@@ -82,15 +87,16 @@ export default {
     }
   },
   methods: {
+    /* 对整个表单进行重置，将所有字段值重置为初始值并移除校验结果 */
     resetLoginForm () {
       /* console.log('resetLoginForm') */
-      /* 对整个表单进行重置，将所有字段值重置为初始值并移除校验结果 */
       this.$refs.loginFormRef.resetFields()
       this.$message({
         showClose: true,
         message: '已重置'
       })
     },
+    /* 登录 */
     login () {
       this.$refs.loginFormRef.validate((valid) => {
         /* console.log(valid) */
@@ -119,8 +125,6 @@ export default {
               message: '登录成功',
               type: 'success'
             })
-            /* console.log(responce.data.data.token) token的路径 */
-
             /* tokenoken是服务端生成的一串字符串，以作客户端进行请求的一个令牌，
             当第一次登录后，服务器生成一个Token便将此Token返回给客户端，
             以后客户端只需带上这个Token前来请求数据即可，无需再次带上用户名和密码。 */
