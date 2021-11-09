@@ -5,4 +5,5 @@ body,
   height: 100%;
   margin: 0px;
   padding: 0px;
+  min-width: 1300px;/* 最小网页宽度 */
 }

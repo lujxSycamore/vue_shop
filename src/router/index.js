@@ -4,6 +4,8 @@ import Login from '../components/Login.vue'
 import Home from '../components/Home.vue'
 import Welcome from '../components/Welcome.vue'
 import Users from '../components/Users.vue'
+import Rights from '../components/authority/Rights.vue'
+import Roles from '../components/authority/Roles.vue'
 
 Vue.use(VueRouter)
 
@@ -16,7 +18,9 @@ const routes = [
     redirect: '/welcome', /* 访问home的时候就重定向到welcome组件 */
     children: [
       { path: '/welcome', component: Welcome },
-      { path: '/users', component: Users }
+      { path: '/users', component: Users },
+      { path: '/rights', component: Rights },
+      { path: '/roles', component: Roles }
     ]
   }
 ]
@@ -24,6 +28,7 @@ const routes = [
 const router = new VueRouter({
   routes: routes
 })
+
 /* 挂载路由守卫 */
 router.beforeEach((to, from, next) => {
   /*  to表示将要访问的路径，from表示从拿一个路径跳转，next()表示放行，next('/xxx')强制跳转 */

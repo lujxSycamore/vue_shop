@@ -50,11 +50,13 @@
 export default {
   data () {
     return {
+
       /* 登录默认用户名与密码 */
       login_form: {
         user_id: 'admin',
         user_password: '123456'
       },
+
       /* 表单合法性验证的规则 */
       login_formRules: {
         user_id: [
@@ -125,10 +127,11 @@ export default {
               message: '登录成功',
               type: 'success'
             })
+            /* 保存当前token */
+            window.sessionStorage.setItem('token', responce.data.data.token)
             /* tokenoken是服务端生成的一串字符串，以作客户端进行请求的一个令牌，
             当第一次登录后，服务器生成一个Token便将此Token返回给客户端，
             以后客户端只需带上这个Token前来请求数据即可，无需再次带上用户名和密码。 */
-            window.sessionStorage.setItem('token', responce.data.data.token)
             this.$router.push('/home')
           })
           .catch((err) => {

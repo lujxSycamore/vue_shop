@@ -13,9 +13,12 @@ axios.interceptors.request.use(config => {
   config.headers.Authorization = window.sessionStorage.getItem('token')
   return config
 })
-Vue.prototype.$http = axios/* 配置axios全局默认值,在每一个组件中不需要再import引入 */
 
-Vue.config.productionTip = false /* 阻止启动生产消息 */
+/* 配置axios全局默认值,在每一个组件中不需要再import引入 */
+Vue.prototype.$http = axios
+
+/* 阻止启动生产消息,一般在项目上线之后改为true */
+Vue.config.productionTip = false
 
 new Vue({
   router,

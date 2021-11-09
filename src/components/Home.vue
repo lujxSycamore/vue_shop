@@ -75,7 +75,10 @@
 export default {
   data () {
     return {
+      /* 通过接口获取的菜单栏数据 */
       menuList: [],
+
+      /* 菜单栏的图标对象 */
       iconObject: {
         125: 'iconfont icon-morentouxiang',
         103: 'iconfont icon-3702mima',
@@ -83,12 +86,16 @@ export default {
         102: 'iconfont icon-danju',
         145: 'iconfont icon-baobiao'
       },
+
+      /* 是否折叠菜单 */
       collapseFlag: false,
+
+      /* 当前激活的菜单 */
       defaultActive: ''
     }
   },
   methods: {
-    /* 登出登录状态，回到登陆界面 */
+    /* 退出登录状态，回到登陆界面 */
     logOut () {
       window.sessionStorage.clear('token')
       this.$router.push('/login')
@@ -99,6 +106,7 @@ export default {
         duration: 3000
       })
     },
+
     /* 获取侧边菜单栏 */
     getMenu () {
       this.$http.get('menus').then((responce) => {
@@ -112,22 +120,20 @@ export default {
           })
         }
         this.menuList = responce.data.data
-        this.$message({
-          message: responce.data.meta.msg,
-          type: 'success',
-          showClose: true,
-          duration: 3000
-        })
       })
     },
+
     /* 菜单栏折叠 */
     foldClick () {
+      /* collapseFlag菜单栏折叠属性 */
       this.collapseFlag = !this.collapseFlag
     },
-    /* 点击菜单栏获取，点击的路径 */
+
+    /* 保存当前选中的路径 */
     menuClick (receivedData) {
       window.sessionStorage.setItem('defaultActive', receivedData)
     },
+
     /* 获取保存的菜单路径 */
     getDefaultActive () {
       this.defaultActive = window.sessionStorage.getItem('defaultActive')

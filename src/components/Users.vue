@@ -75,7 +75,8 @@
         <el-table-column prop="" label="操作">
           <!-- 每一行用户相关操作按钮区域 -->
 
-          <template slot-scope="scope"><!-- 获取该行的相关数据 -->
+          <template slot-scope="scope"
+            ><!-- 获取该行的相关数据 -->
             <div class="operate_buttonArea">
               <!-- 修改用户记录 -->
               <el-tooltip
@@ -121,6 +122,7 @@
                   type="warning"
                   icon="el-icon-star-off"
                   circle
+                  @click="showSetRolesDialog(scope.row)"
                 ></el-button>
               </el-tooltip>
             </div>
@@ -205,11 +207,38 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editUserDialogClose()">取 消</el-button>
-        <el-button type="primary" @click="editUser()"
+        <el-button type="primary" @click="editUser()">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 分配角色_对话框 默认不可见 -->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="SetRolesDialogVisib"
+      width="30%"
+      @close="SetRolesDialogClosed()"
+    >
+      <div class="set_roles_item">
+        <p>当前用户：{{ userInfo.username }}</p>
+        <p>当前角色：{{ userInfo.role_name }}</p>
+        <p>分配新角色：
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+          <el-option
+            v-for="item in rolesList"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="SetRolesDialogVisib = false">取 消</el-button>
+        <el-button type="primary" @click="setRoles()"
           >确 定</el-button
         >
       </span>
-      {{editForm}}
     </el-dialog>
   </div>
 </template>
@@ -310,7 +339,19 @@ export default {
           /* 手机的自定义校验规则 */
           { validator: checkMobile, trigger: 'blur' }
         ]
-      }
+      },
+
+      /* 分配权限对话框可见属性 */
+      SetRolesDialogVisib: false,
+
+      /* 点击分配权限按钮时 需要被分配权限的角色用户信息 */
+      userInfo: {},
+
+      /* 当前所有角色的列表 */
+      rolesList: [],
+
+      /* 选择器选中的角色id值 */
+      selectedRoleId: ''
     }
   },
   methods: {
@@ -436,20 +477,22 @@ export default {
             type: 'error'
           })
         }
-        this.$http.put('users/' + this.editForm.id, {
-          email: this.editForm.email,
-          mobile: this.editForm.mobile
-        }).then((responce) => {
-          if (responce.data.meta.status !== 200) {
-            return this.$message({
-              showClose: true,
-              message: responce.data.meta.msg,
-              type: 'error'
-            })
-          }
-          this.EditUserDialogVisible = false
-          this.getUserList()
-        })
+        this.$http
+          .put('users/' + this.editForm.id, {
+            email: this.editForm.email,
+            mobile: this.editForm.mobile
+          })
+          .then((responce) => {
+            if (responce.data.meta.status !== 200) {
+              return this.$message({
+                showClose: true,
+                message: responce.data.meta.msg,
+                type: 'error'
+              })
+            }
+            this.EditUserDialogVisible = false
+            this.getUserList()
+          })
       })
     },
 
@@ -459,26 +502,75 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.$http.delete('users/' + value).then((responce) => {
-          if (responce.data.meta.status !== 200) {
-            return this.$message({
-              type: 'error',
-              message: '删除失败'
-            })
-          }
-          this.getUserList()
+      })
+        .then(() => {
+          this.$http.delete('users/' + value).then((responce) => {
+            if (responce.data.meta.status !== 200) {
+              return this.$message({
+                type: 'error',
+                message: '删除失败'
+              })
+            }
+            this.getUserList()
+          })
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
         })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
+
+    /* 显示分配角色对话框 */
+    showSetRolesDialog (row) {
+      this.userInfo = row
+      this.SetRolesDialogVisib = true
+      this.$http.get('roles').then((responce) => {
+        if (responce.data.meta.status !== 200) {
+          return this.$message({
+            type: 'error',
+            message: responce.data.meta.msg
+          })
+        }
+        this.rolesList = responce.data.data
+      })
+    },
+
+    /* 按下确认按钮，修改用户的角色 */
+    setRoles () {
+      if (!this.selectedRoleId) {
+        return this.$message({
+          type: 'error',
+          message: '未选择用户'
+        })
+      }
+      this.$http.put('users/' + this.userInfo.id + '/role', {
+        rid: this.selectedRoleId
+      }).then((responce) => {
+        if (responce.data.meta.status !== 200) {
+          return this.$message({
+            type: 'error',
+            message: responce.data.meta.msg
+          })
+        }
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: responce.data.meta.msg
         })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
+        this.getUserList()
+        this.SetRolesDialogVisib = false
       })
+    },
+
+    /* 分配角色对话框关闭事件 */
+    SetRolesDialogClosed () {
+      this.selectedRoleId = ''
+      this.userInfo = {}
     }
   },
 
@@ -507,4 +599,5 @@ export default {
 .addUser_form {
   width: 90%;
 }
+
 </style>
