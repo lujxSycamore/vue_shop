@@ -98,6 +98,7 @@ export default {
         message: '已重置'
       })
     },
+
     /* 登录 */
     login () {
       this.$refs.loginFormRef.validate((valid) => {

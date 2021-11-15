@@ -7,3 +7,6 @@ body,
   padding: 0px;
   min-width: 1300px;/* 最小网页宽度 */
 }
+.el-cascader-menu {
+  height: 300px;
+}/* Cascader 级联选择器高度问题解决 */
