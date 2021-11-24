@@ -53,8 +53,8 @@ export default {
 
       /* 登录默认用户名与密码 */
       login_form: {
-        user_id: 'admin',
-        user_password: '123456'
+        user_id: '',
+        user_password: ''
       },
 
       /* 表单合法性验证的规则 */

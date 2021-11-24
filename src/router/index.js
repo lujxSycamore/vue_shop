@@ -7,6 +7,8 @@ import Users from '../components/Users.vue'
 import Rights from '../components/authority/Rights.vue'
 import Roles from '../components/authority/Roles.vue'
 import Categories from '../components/goods/Categories.vue'
+import Params from '../components/goods/Params.vue'
+import Good from '../components/goods/Goods.vue'
 
 /* 引入第三方树状表格 vue-table-with-tree-grid */
 import tableTree from 'vue-table-with-tree-grid'
@@ -21,13 +23,15 @@ const routes = [
   {
     path: '/home',
     component: Home,
-    redirect: '/welcome', /* 访问home的时候就重定向到welcome组件 */
+    redirect: '/welcome', /* home的子组件默认为welcome */
     children: [
       { path: '/welcome', component: Welcome },
       { path: '/users', component: Users },
       { path: '/rights', component: Rights },
       { path: '/roles', component: Roles },
-      { path: '/categories', component: Categories }
+      { path: '/categories', component: Categories },
+      { path: '/params', component: Params },
+      { path: '/goods', component: Good }
     ]
   }
 ]
@@ -43,6 +47,7 @@ router.beforeEach((to, from, next) => {
     return next()
   }
   const token = sessionStorage.getItem('token')
+  /* 如果存在后端给予的token，表明已经登录成功 */
   if (!token) {
     next('/login')
     alert('请先登录')
