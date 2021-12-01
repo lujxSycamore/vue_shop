@@ -29,6 +29,7 @@
         <!-- 密码框输入input -->
         <el-form-item label="密 码" prop="user_password">
           <el-input
+            @keydown.enter.native="login()"
             type="password"
             v-model="login_form.user_password"
             prefix-icon="iconfont icon-lock_fill"
@@ -139,6 +140,15 @@ export default {
             console.log(err)
           })
       })
+    },
+    mounted () {
+      this.loadData()
+      document.onkeydown = function (e) {
+        const key = window.event.keyCode
+        if (key === 13) {
+          this.login()
+        }
+      }
     }
   }
 }

@@ -10,3 +10,7 @@ body,
 .el-cascader-menu {
   height: 400px;
 }/* Cascader 级联选择器高度问题解决 */
+.ql-editor{
+  min-height: 300px;
+  /* 富文本编辑器的最小高度 */
+}
