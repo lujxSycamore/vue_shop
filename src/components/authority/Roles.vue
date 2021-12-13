@@ -171,9 +171,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editRoleDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editRole()"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="editRole()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -289,7 +287,8 @@ export default {
 
     /* 显示 分配权限_对话框 */
     showSetRightDialog (role) {
-      this.$http.get('rights/tree').then((responce) => { /* 获取当前所有权限的树形列表 */
+      this.$http.get('rights/tree').then((responce) => {
+        /* 获取当前所有权限的树形列表 */
         if (responce.data.meta.status !== 200) {
           return this.$message({
             type: 'error',
@@ -298,7 +297,10 @@ export default {
         }
         this.rightsList = responce.data.data
 
-        this.getDefaulcheckedKeys(role, this.DefaulcheckedKeys)/* 获取当前角色已有的权限 */
+        this.getDefaulcheckedKeys(
+          role,
+          this.DefaulcheckedKeys
+        ) /* 获取当前角色已有的权限 */
         this.setRightDialogVisible = true
         this.SetRightRoleId = role.id
       })
@@ -311,22 +313,24 @@ export default {
         ...this.$refs.setRightTreeRef.getHalfCheckedKeys()
       ] /* "..."为展开运算符，将数组展开 */
       const idstr = keys.join(',')
-      this.$http.post('roles/' + this.SetRightRoleId + '/rights', {
-        rids: idstr
-      }).then((responce) => {
-        if (responce.data.meta.status !== 200) {
-          return this.$message({
-            type: 'error',
-            message: responce.data.meta.msg
-          })
-        }
-        this.$message({
-          type: 'success',
-          message: '角色分配成功'
+      this.$http
+        .post('roles/' + this.SetRightRoleId + '/rights', {
+          rids: idstr
         })
-        this.getRolesList()
-        this.setRightDialogVisible = false
-      })
+        .then((responce) => {
+          if (responce.data.meta.status !== 200) {
+            return this.$message({
+              type: 'error',
+              message: responce.data.meta.msg
+            })
+          }
+          this.$message({
+            type: 'success',
+            message: '角色分配成功'
+          })
+          this.getRolesList()
+          this.setRightDialogVisible = false
+        })
     },
 
     /* 通过递归children获取当前角色的三级权限 */
@@ -434,23 +438,25 @@ export default {
             message: '表单验证未通过'
           })
         }
-        this.$http.put('roles/' + this.editRoleForm.roleId, {
-          roleName: this.editRoleForm.roleName,
-          roleDesc: this.editRoleForm.roleDesc
-        }).then((responce) => {
-          if (responce.data.meta.status !== 200) {
-            return this.$message({
-              type: 'error',
-              message: responce.data.meta.msg
-            })
-          }
-          this.$message({
-            type: 'success',
-            message: '修改成功'
+        this.$http
+          .put('roles/' + this.editRoleForm.roleId, {
+            roleName: this.editRoleForm.roleName,
+            roleDesc: this.editRoleForm.roleDesc
           })
-          this.getRolesList()
-          this.editRoleDialogVisible = false
-        })
+          .then((responce) => {
+            if (responce.data.meta.status !== 200) {
+              return this.$message({
+                type: 'error',
+                message: responce.data.meta.msg
+              })
+            }
+            this.$message({
+              type: 'success',
+              message: '修改成功'
+            })
+            this.getRolesList()
+            this.editRoleDialogVisible = false
+          })
       })
     }
   },
