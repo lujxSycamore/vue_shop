@@ -11,6 +11,7 @@ import Params from '../components/goods/Params.vue'
 import Good from '../components/goods/Goods.vue'
 import Add from '../components/goods/Add.vue'
 import Order from '../order/Order.vue'
+import Report from '../report/Report.vue'
 
 /* 引入第三方树状表格 vue-table-with-tree-grid */
 import tableTree from 'vue-table-with-tree-grid'
@@ -35,7 +36,8 @@ const routes = [
       { path: '/params', component: Params },
       { path: '/goods', component: Good },
       { path: '/goods/add', component: Add },
-      { path: '/orders', component: Order }
+      { path: '/orders', component: Order },
+      { path: '/reports', component: Report }
     ]
   }
 ]
